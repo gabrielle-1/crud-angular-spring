@@ -12,6 +12,10 @@ Projeto feito através do curso ministrado pela Loiane Groner através de seu ca
 - Java
 - Spring Boot
 
+## Front end
+- TypeScript
+- Angular
+
 # Autor
 
 Gabrielle Rodrigues Machado da Silva
