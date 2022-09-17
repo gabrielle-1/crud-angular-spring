@@ -1,6 +1,5 @@
-# crud-angular-spring
-## Gerenciamento de Cursos
-
+# Gerenciamento de Cursos
+## crud-angular-spring
 
 # Sobre o projeto
 
