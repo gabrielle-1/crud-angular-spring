@@ -1,3 +1,9 @@
+# Angular
+
+Created: August 23, 2022 8:10 PM
+Definition: Aula 16 - https://www.youtube.com/watch?v=ATjHgBh8dWg&t=1007s -  minuto 16
+Reviewed: No
+
 ### Criando um projeto no Angular
 
 ```jsx
@@ -575,4 +581,31 @@ A partir do momento que declaramos a variável dentro do construtor, ela se torn
     ];
     
     module.exports = PROX_CONFIG;**
+    ```
+    
+    No arquivo **package.json**:
+    
+    na parte de debug, inserimos o proxy no start:
+    
+    ```json
+    "scripts": {
+        "ng": "ng",
+        "start": "ng serve --proxy-config proxy.conf.js",
+        "build": "ng build",
+        "watch": "ng build --watch --configuration development",
+        "test": "ng test"
+      },
+    ```
+    
+    Basicamente o que diz é:
+    
+    Quando for fazer o ng serve, use o proxy.
+    
+    A partir de agora utilizaremos o **npm run start** em vez do **ng serve** para que sempre que rodar no servidor ele utilizar o proxy
+    
+    Agora basta trocar no serviço o endpoint da nossa url, em vez de inserir o conteúdo completo do localhost, inserimos apenas:
+    
+    ```tsx
+    //endpoint url
+      private readonly API = 'api/courses';
     ```
