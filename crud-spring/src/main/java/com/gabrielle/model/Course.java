@@ -19,7 +19,7 @@ public class Course {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO) // Auto increment
-    @JsonProperty("id")
+    @JsonProperty("_id")
     // @JsonIgnore("_id") ignora o campo
     private long id;
 
