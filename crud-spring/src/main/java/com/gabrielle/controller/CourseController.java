@@ -6,7 +6,9 @@ import java.util.Optional;
 import com.gabrielle.model.Course;
 import com.gabrielle.repository.CourseRepository;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,39 +37,39 @@ public class CourseController {
     // Poderiamos fazer a injeção das dependencias via Autowired -->
     // @Autowired
     // private final CourseRepository
-    // Ou via Constrtutor(mais indicado)
+    // Ou via Construtor(mais indicado)
 
     public CourseController(CourseRepository courseRepository) {
         this.courseRepository = courseRepository;
     }
 
     @GetMapping
-    // GetMapping é o mesmo que: @RequestMapping(method = ResquestMethod.GET)
     public List<Course> list() {
         return courseRepository.findAll();
     }
 
-    // @RequestMapping(method= RequestMethod.POST)
     @PostMapping
     @ResponseStatus(code = HttpStatus.CREATED)
-    public Course create(@RequestBody Course course) {
-        return this.courseRepository.save(course);
-        // return ResponseEntity.status(HttpStatus.CREATED)
-        // .body(courseRepository.save(course));
+    public ResponseEntity<Course> create(@RequestBody Course course) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(courseRepository.save(course));
     }
 
     @DeleteMapping("/delete/{id}")
-    // GetMapping é o mesmo que: @RequestMapping(method = ResquestMethod.GET)
-    public void teste(@PathVariable("id") Long id) {
+    public void delete(@PathVariable("id") Long id) {
         this.courseRepository.deleteById(id);
     }
 
     @PostMapping("/update")
-    public Course update(@RequestBody Course course) {
+    public ResponseEntity<Course> update(@RequestBody Course course) {
         var optionalCourse = this.find(course.getId());
-        // this.courseRepository.update(optionalCourse, "", "");
-        return null;
-
+        if (optionalCourse.isPresent()) {
+            BeanUtils.copyProperties(course, optionalCourse);
+            this.courseRepository.deleteById(course.getId());
+            return ResponseEntity.status(HttpStatus.OK).body(courseRepository.save(course));
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 
     public Optional<Course> find(long id) {
