@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { ActivatedRoute, Router } from '@angular/router';
 import { catchError, Observable, of } from 'rxjs';
 import { ErrorDialogComponent } from '../../shared/components/error-dialog/error-dialog.component';
 import { CoursesService } from '../services/courses.service';
@@ -17,10 +18,11 @@ export class CoursesComponent implements OnInit {
 
   // coursesService: CoursesService;
 
-  constructor(private coursesService: CoursesService,
-              public dialog: MatDialog) {
-    // this.courses = [];
-    // this.coursesService = new CoursesService();
+  constructor(
+    private coursesService: CoursesService,
+    public dialog: MatDialog,
+    private router: Router,
+    private route: ActivatedRoute) {
     this.courses$ = this.coursesService.list()
     .pipe(
       catchError(error => {
@@ -31,6 +33,11 @@ export class CoursesComponent implements OnInit {
     );
 
    }
+
+  // Redireciona para: courses/new para a criação de um novo curso
+  onAdd() {
+    this.router.navigate(['new'], {relativeTo: this.route});
+  }
 
   onError(errorMsg: string) {
     this.dialog.open(ErrorDialogComponent, {
