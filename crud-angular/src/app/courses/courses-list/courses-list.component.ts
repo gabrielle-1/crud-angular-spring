@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Course } from '../model/course';
 
@@ -9,7 +9,7 @@ import { Course } from '../model/course';
 })
 export class CoursesListComponent {
 
-  courses: Course[] = [];
+  @Input() courses: Course[] = [];
   displayedColumns = ["name", "category", "actions"];
 
   constructor(
