@@ -1,7 +1,7 @@
 const PROX_CONFIG = [
   {
     context: ['/api'],
-    target: 'http://127.0.0.1:1234',
+    target: 'http://localhost:8080',
     secure: false,
     logLevel: 'debug',
     changeOrigin: true
