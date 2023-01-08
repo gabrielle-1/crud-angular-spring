@@ -24,9 +24,7 @@ export class CourseFormComponent implements OnInit {
       //this.form
   }
 
-  ngOnInit(): void {
-    this.form.value.name = 'Gabrielle';
-  }
+  ngOnInit(): void {}
 
   onCancel() {
     this.location.back();
