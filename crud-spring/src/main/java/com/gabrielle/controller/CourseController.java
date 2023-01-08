@@ -34,11 +34,6 @@ public class CourseController {
 
     private final CourseRepository courseRepository;
 
-    // Poderiamos fazer a injeção das dependencias via Autowired -->
-    // @Autowired
-    // private final CourseRepository
-    // Ou via Construtor(mais indicado)
-
     public CourseController(CourseRepository courseRepository) {
         this.courseRepository = courseRepository;
     }
@@ -56,11 +51,13 @@ public class CourseController {
     }
 
     @DeleteMapping("/delete/{id}")
+    @ResponseStatus(code = HttpStatus.OK)
     public void delete(@PathVariable("id") Long id) {
         this.courseRepository.deleteById(id);
     }
 
     @PostMapping("/update")
+    @ResponseStatus(code = HttpStatus.OK)
     public ResponseEntity<Course> update(@RequestBody Course course) {
         var optionalCourse = this.find(course.getId());
         if (optionalCourse.isPresent()) {
@@ -71,7 +68,7 @@ public class CourseController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
-
+    @ResponseStatus(code = HttpStatus.OK)
     public Optional<Course> find(long id) {
         return this.courseRepository.findById(id);
     }
