@@ -7,9 +7,10 @@
   <div class="column-flex mat-elevation-z8">
     <!-- Added a courses-list component-->
     <app-courses-list
-      *ngIf="courses$ | async as courses; else loading">
+      *ngIf="courses$ | async as courses; else loading"
       [courses]="courses"
-    </app-courses-list>
+      (add) = "onAdd()"
+    ></app-courses-list>
 
     <ng-template #loading>
       <div class="loading-spinner">
