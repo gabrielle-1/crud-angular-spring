@@ -13,8 +13,10 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -50,27 +52,34 @@ public class CourseController {
                 .body(courseRepository.save(course));
     }
 
-    @DeleteMapping("/delete/{id}")
-    @ResponseStatus(code = HttpStatus.OK)
-    public void delete(@PathVariable("id") Long id) {
-        this.courseRepository.deleteById(id);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
+        var optionalCourse = this.courseRepository.findById(id);
+        if (optionalCourse.isPresent()) {
+            courseRepository.deleteById(id);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).<Void>build();
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 
-    @PostMapping("/update")
-    @ResponseStatus(code = HttpStatus.OK)
-    public ResponseEntity<Course> update(@RequestBody Course course) {
-        var optionalCourse = this.find(course.getId());
+    @PutMapping("/{id}")
+    public ResponseEntity<Course> update(@PathVariable Long id, @RequestBody Course course) {
+
+        var optionalCourse = this.courseRepository.findById(id);
         if (optionalCourse.isPresent()) {
             BeanUtils.copyProperties(course, optionalCourse);
-            this.courseRepository.deleteById(course.getId());
             return ResponseEntity.status(HttpStatus.OK).body(courseRepository.save(course));
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
-    @ResponseStatus(code = HttpStatus.OK)
-    public Optional<Course> find(long id) {
-        return this.courseRepository.findById(id);
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Course> findById(@PathVariable Long id) {
+        return this.courseRepository.findById(id)
+                .map(record -> ResponseEntity.ok().body(record))
+                .orElse(ResponseEntity.notFound().build());
     }
 
 }
