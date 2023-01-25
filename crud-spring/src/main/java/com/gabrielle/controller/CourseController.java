@@ -2,14 +2,14 @@ package com.gabrielle.controller;
 
 import java.util.List;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import lombok.AllArgsConstructor;
 
 import com.gabrielle.model.Course;
-import com.gabrielle.repository.CourseRepository;
+import com.gabrielle.service.CourseService;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -23,57 +23,50 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-// Ao anotar a classe como Controller, temos o Bean que é uma instância dessa classe/componente chamado Component
-
-// @Component --> O Spring cria a instancia(Bean) 
-
-// Diz para o spring que essa classe possui um endpoint/URL para ser acessado
-// pela API
-
 @Validated
-@RestController // Componente onde expõe uma API ou endpoint
+@RestController
 @RequestMapping("/api/courses")
-// @AllArgsConstructor -->Cria o construtor automaticamente(equivalente ao
-// Autowired)
-
 public class CourseController {
 
-    private final CourseRepository courseRepository;
+    CourseService courseService;
 
-    public CourseController(CourseRepository courseRepository) {
-        this.courseRepository = courseRepository;
+    public CourseController(CourseService courseService) {
+        this.courseService = courseService;
     }
 
     @GetMapping
     public List<Course> list() {
-        return courseRepository.findAll();
+        return courseService.list();
     }
 
     @PostMapping
     @ResponseStatus(code = HttpStatus.CREATED)
     public ResponseEntity<Course> create(@RequestBody @Valid Course course) {
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(courseRepository.save(course));
+        var courseSaved = this.courseService.create(course);
+        if (courseSaved != null) {
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(courseSaved);
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable("id") @NotNull @Positive Long id) {
-        var optionalCourse = this.courseRepository.findById(id);
-        if (optionalCourse.isPresent()) {
-            courseRepository.deleteById(id);
+    public ResponseEntity<Void> delete(@PathVariable @NotNull @Positive Long id) {
+        var courseDeleted = this.courseService.delete(id);
+
+        if (courseDeleted)
             return ResponseEntity.status(HttpStatus.NO_CONTENT).<Void>build();
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Course> update(@PathVariable @NotNull @Positive Long id, @RequestBody @Valid Course course) {
 
-        var optionalCourse = this.courseRepository.findById(id);
-        if (optionalCourse.isPresent()) {
-            BeanUtils.copyProperties(course, optionalCourse);
-            return ResponseEntity.status(HttpStatus.OK).body(courseRepository.save(course));
+        var courseUpdated = this.courseService.update(id, course);
+        if (courseUpdated != null) {
+            return ResponseEntity.status(HttpStatus.OK).body(courseUpdated);
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
@@ -81,9 +74,12 @@ public class CourseController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Course> findById(@PathVariable @NotNull @Positive Long id) {
-        return this.courseRepository.findById(id)
-                .map(record -> ResponseEntity.ok().body(record))
-                .orElse(ResponseEntity.notFound().build());
+        var courseFinded = this.courseService.findById(id);
+
+        if (courseFinded != null)
+            return ResponseEntity.ok().body(courseFinded);
+
+        return ResponseEntity.notFound().build();
     }
 
 }
