@@ -5,9 +5,8 @@ import java.util.List;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-import lombok.AllArgsConstructor;
 
-import com.dto.CourseDTO;
+import com.gabrielle.dto.CourseDTO;
 import com.gabrielle.model.Course;
 import com.gabrielle.service.CourseService;
 

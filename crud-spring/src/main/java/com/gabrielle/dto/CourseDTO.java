@@ -1,4 +1,4 @@
-package com.dto;
+package com.gabrielle.dto;
 
 import com.gabrielle.model.Course;
 
