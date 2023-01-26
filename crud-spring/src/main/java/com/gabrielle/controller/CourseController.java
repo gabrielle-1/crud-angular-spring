@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 
+import com.dto.CourseDTO;
 import com.gabrielle.model.Course;
 import com.gabrielle.service.CourseService;
 
@@ -41,8 +42,8 @@ public class CourseController {
 
     @PostMapping
     @ResponseStatus(code = HttpStatus.CREATED)
-    public ResponseEntity<Course> create(@RequestBody @Valid Course course) {
-        var courseSaved = this.courseService.create(course);
+    public ResponseEntity<Course> create(@RequestBody @Valid CourseDTO dto) {
+        var courseSaved = this.courseService.create(dto.convert());
         if (courseSaved != null) {
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body(courseSaved);
@@ -62,9 +63,9 @@ public class CourseController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Course> update(@PathVariable @NotNull @Positive Long id, @RequestBody @Valid Course course) {
+    public ResponseEntity<Course> update(@PathVariable @NotNull @Positive Long id, @RequestBody @Valid CourseDTO dto) {
 
-        var courseUpdated = this.courseService.update(id, course);
+        var courseUpdated = this.courseService.update(id, dto.convert());
         if (courseUpdated != null) {
             return ResponseEntity.status(HttpStatus.OK).body(courseUpdated);
         } else {

@@ -14,9 +14,11 @@ import org.hibernate.validator.constraints.Length;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Entity
+@NoArgsConstructor
 public class Course {
 
     @Id
@@ -43,6 +45,18 @@ public class Course {
     @Pattern(regexp = "Ativo|Inativo")
     @Column(length = 10, nullable = false)
     private String status = "Ativo";
+
+    public Course(long id, String name, String category, String status) {
+        this.id = id;
+        this.name = name;
+        this.category = category;
+        this.status = status;
+    }
+
+    public Course(String name, String category) {
+        this.name = name;
+        this.category = category;
+    }
 
     public String getName() {
         return this.name;
